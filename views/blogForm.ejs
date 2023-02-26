@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+<body>
+  <%- include('./partials/nav.ejs') %>
+
+  <div class="create-blog content">
+    <form 
+      id="postForm"
+      data-req-method="<%= mode == 'edit' ? 'PUT' : 'POST' %>"
+      data-req-url="<%= mode == 'edit' ? `/blogs/${blogData._id}/edit` : '/blogs' %>">
+      <label for="title">Blog title:</label>
+      <input 
+        type="text" 
+        id="title" 
+        name="title" 
+        value="<%= mode=='edit' ? blogData.title : '' %>"
+        required>
+      <label for="snippet">Blog snippet:</label>
+      <input 
+        type="text" 
+        id="snippet" 
+        name="snippet" 
+        value="<%= mode=='edit' ? blogData.snippet : '' %>"
+        required>
+      <label for="body">Blog body:</label>
+      <textarea id="body" name="body" required><%= mode=='edit' ? blogData.body : '' %></textarea>
+      <button class="<%= mode=='edit' ? 'updatePost' : 'createPost' %>"><%= mode=='edit' ? 'Update' : 'Create' %></button>
+    </form>
+  </div>
+  <%- include('./partials/footer.ejs') %>
+  <script>
+    const form = document.querySelector('#postForm');
+
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+
+      // formData 
+      const title = event.target[0].value;
+      const snippet = event.target[1].value;
+      const body = event.target[2].value;
+      const formData = JSON.stringify({title, snippet, body});
+
+      //mode, request URL & request method
+      const { reqUrl, reqMethod } = form.dataset;
+
+      // http request & redirect on response
+      fetch(reqUrl, {
+        method: reqMethod,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err => console.error('Error Occured!'))
+    })
+    
+  </script>
+</body>
+</html>

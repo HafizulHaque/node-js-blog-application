@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+<body>
+  <%- include('./partials/nav.ejs') %>
+
+  <div class="details content">
+    <div class="details-header">
+      <h2 class="title"><%= blog.title %></h2>
+      <div class="icon">
+        <a class="edit" href="/blogs/<%= blog._id %>/edit">
+          <i class="fa-solid fa-pen-to-square fa-lg"></i>
+        </a>
+        <a class="delete" data-doc="<%= blog._id %>">
+          <i class="fa-solid fa-trash fa-lg"></i>
+        </a>
+      </div>
+    </div>
+    <div class="content">
+      <p><%= blog.body %></p>
+    </div>
+  </div>
+  <%- include('./partials/footer.ejs') %>
+  <!-- script  -->
+  <script>
+    const trashCan = document.querySelector('a.delete');
+
+    trashCan.addEventListener('click', (e)=>{
+      let deleteConfirm = confirm("This blog will be deleted. Want to proceed?");
+      if(deleteConfirm){
+        const endPoint = `/blogs/${trashCan.dataset.doc}`;
+        fetch(endPoint, {
+          method: 'DELETE'
+        })
+        .then(response=>response.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err=>console.log(err));
+      }
+    })
+  </script>
+</body>
+</html>
