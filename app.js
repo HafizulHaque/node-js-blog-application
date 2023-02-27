@@ -11,7 +11,10 @@ mongoose.connect(dbURI, {
   useUnifiedTopology: true
 })
   .then(res => console.log('connected to db'))
-  .catch(err => console.log('database connection failed'))
+  .catch(err => {
+    console.log('database connection failed');
+    console.log(err);
+  })
 
 //express app
 let app = express();
@@ -22,7 +25,7 @@ let port = 8082;
 app.set('view engine', 'ejs')
 
 //app listen
-app.listen(port, ()=>{
+app.listen( process.env.PORT | port, ()=>{
   console.log(`app listening on port ${port}`);
 })
 
